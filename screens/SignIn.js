@@ -19,14 +19,16 @@ export default function SignIn({ navigation }) {
   const [password, setPassword] = useState("");
 
   function logIn() {
-    if (
-      email === "duongtrungkien.dev@gmail.com" &&
-      password === "kienduongtrung"
-    ) {
-      navigation.navigate("HomeScreen");
-    } else {
-      alert("Invalid email or password");
-    }
+    navigation.navigate("HomeScreen");
+
+    // if (
+    //   email === "duongtrungkien.dev@gmail.com" &&
+    //   password === "kienduongtrung"
+    // ) {
+    //   navigation.navigate("HomeScreen");
+    // } else {
+    //   alert("Invalid email or password");
+    // }
   }
 
   return (

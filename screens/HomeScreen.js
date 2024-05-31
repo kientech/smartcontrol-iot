@@ -23,70 +23,10 @@ import {
 } from "react-native-heroicons/solid";
 import { storeColors } from "../theme";
 import MyRoom from "../components/MyRoom";
-import { io } from "socket.io-client";
 import WebSocket from "react-native-websocket";
 
-const SERVER_URL = "ws://192.168.1.2:8080";
+const SERVER_URL = "ws://192.168.1.3:8080";
 export default function HomeScreen({ navigation }) {
-  // const [isSwitchEnableFan, setIsSwitchEnableFan] = useState(false);
-  // const [isSwitchEnableLed, setIsSwitchEnableLed] = useState(false);
-  // const [onFan, setOnFan] = useState("Off");
-  // const [onLed, setOnLed] = useState("Off");
-  // const [sensorData, setSensorData] = useState({
-  //   temperature: 0,
-  //   humidity: 0,
-  //   co2: 0,
-  // });
-
-  // -----
-  // // console.log("🚀 ~ HomeScreen ~ sensorData:", sensorData);
-  // const [serverResponse, setServerResponse] = useState(
-  //   "Waiting for server response..."
-  // );
-  // const [messageToSend, setMessageToSend] = useState("");
-
-  // const handleOnMessage = (message) => {
-  //   setServerResponse(message.data);
-  // };
-
-  // const handleOnError = (error) => {
-  //   console.error("WebSocket error:", error.nativeEvent.description);
-  // };
-
-  // const onMessage = (event) => {
-  //   const data = JSON.parse(event.data);
-  //   setSensorData(data);
-  // };
-
-  // const handleSendMessage = () => {
-  //   if (websocket) {
-  //     websocket.send("on");
-  //   }
-  // };
-
-  // const toggleSwitchFans = () => {
-  //   if (websocket) {
-  //     const turnOnFan = isSwitchEnableFan ? "turnOffFan" : "turnOnFan";
-  //     websocket.send(turnOnFan);
-  //   }
-
-  //   const newState = !isSwitchEnableFan;
-  //   setIsSwitchEnableFan(newState);
-  //   setOnFan(newState ? "On" : "Off");
-  // };
-
-  // const toggleSwitchLeds = () => {
-  //   if (websocket) {
-  //     const message = isSwitchEnableLed ? "turnOffLed" : "turnOnLed";
-  //     websocket.send(message);
-  //   }
-
-  //   const newState = !isSwitchEnableLed;
-  //   setIsSwitchEnableLed(newState);
-  //   setOnLed(newState ? "On" : "Off");
-  // };
-
-  // // ----
   const [isSwitchEnableFan, setIsSwitchEnableFan] = useState(false);
   const [isSwitchEnableLed, setIsSwitchEnableLed] = useState(false);
   const [onFan, setOnFan] = useState("Off");
@@ -135,6 +75,7 @@ export default function HomeScreen({ navigation }) {
     setIsSwitchEnableLed(newState);
     setOnLed(newState ? "On" : "Off");
   };
+
 
   return (
     <SafeAreaView>
