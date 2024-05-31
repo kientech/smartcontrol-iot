@@ -26,7 +26,7 @@ import MyRoom from "../components/MyRoom";
 import { io } from "socket.io-client";
 import WebSocket from "react-native-websocket";
 
-const SERVER_URL = "ws://192.168.1.6:8080";
+const SERVER_URL = "ws://test-iot-35773ff47743.herokuapp.com/";
 export default function HomeScreen({ navigation }) {
   const [isSwitchEnableFan, setIsSwitchEnableFan] = useState(false);
   const [isSwitchEnableLed, setIsSwitchEnableLed] = useState(false);
@@ -40,7 +40,7 @@ export default function HomeScreen({ navigation }) {
   });
 
   // -----
-  console.log("🚀 ~ HomeScreen ~ sensorData:", sensorData);
+  // console.log("🚀 ~ HomeScreen ~ sensorData:", sensorData);
   const [serverResponse, setServerResponse] = useState(
     "Waiting for server response..."
   );
@@ -55,12 +55,8 @@ export default function HomeScreen({ navigation }) {
   };
 
   const onMessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      setSensorData(data);
-    } catch (error) {
-      console.error("Failed to parse message", error);
-    }
+    const data = JSON.parse(event.data);
+    setSensorData(data);
   };
 
   const handleSendMessage = () => {
@@ -71,8 +67,8 @@ export default function HomeScreen({ navigation }) {
 
   const toggleSwitchFans = () => {
     if (websocket) {
-      const message = isSwitchEnableFan ? "turnOffFan" : "turnOnFan";
-      websocket.send(message);
+      const turnOnFan = isSwitchEnableFan ? "turnOffFan" : "turnOnFan";
+      websocket.send(turnOnFan);
     }
 
     const newState = !isSwitchEnableFan;

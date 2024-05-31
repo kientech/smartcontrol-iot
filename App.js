@@ -7,13 +7,14 @@ import HomeScreen from "./screens/HomeScreen";
 import FanScreen from "./screens/FanScreen";
 import Members from "./screens/Members";
 import ChatApp from "./screens/ChatApp";
-
+import Test from "./screens/Test";
 export default function App() {
   return (
     // <StackNavigation />
     // <ChatApp />
     // <LedControl />
     <HomeScreen />
+    // <Test></Test>
     // <FanScreen />
     // <Members />
     // <FanScreen />
