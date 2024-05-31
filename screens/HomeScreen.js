@@ -26,69 +26,85 @@ import MyRoom from "../components/MyRoom";
 import { io } from "socket.io-client";
 import WebSocket from "react-native-websocket";
 
-const SERVER_URL = "ws://test-iot-35773ff47743.herokuapp.com/";
+const SERVER_URL = "ws://server-iot-54eb32613657.herokuapp.com/";
 export default function HomeScreen({ navigation }) {
+  // const [isSwitchEnableFan, setIsSwitchEnableFan] = useState(false);
+  // const [isSwitchEnableLed, setIsSwitchEnableLed] = useState(false);
+  // const [onFan, setOnFan] = useState("Off");
+  // const [onLed, setOnLed] = useState("Off");
+  // const [sensorData, setSensorData] = useState({
+  //   temperature: 0,
+  //   humidity: 0,
+  //   co2: 0,
+  // });
+
+  // -----
+  // // console.log("🚀 ~ HomeScreen ~ sensorData:", sensorData);
+  // const [serverResponse, setServerResponse] = useState(
+  //   "Waiting for server response..."
+  // );
+  // const [messageToSend, setMessageToSend] = useState("");
+
+  // const handleOnMessage = (message) => {
+  //   setServerResponse(message.data);
+  // };
+
+  // const handleOnError = (error) => {
+  //   console.error("WebSocket error:", error.nativeEvent.description);
+  // };
+
+  // const onMessage = (event) => {
+  //   const data = JSON.parse(event.data);
+  //   setSensorData(data);
+  // };
+
+  // const handleSendMessage = () => {
+  //   if (websocket) {
+  //     websocket.send("on");
+  //   }
+  // };
+
+  // const toggleSwitchFans = () => {
+  //   if (websocket) {
+  //     const turnOnFan = isSwitchEnableFan ? "turnOffFan" : "turnOnFan";
+  //     websocket.send(turnOnFan);
+  //   }
+
+  //   const newState = !isSwitchEnableFan;
+  //   setIsSwitchEnableFan(newState);
+  //   setOnFan(newState ? "On" : "Off");
+  // };
+
+  // const toggleSwitchLeds = () => {
+  //   if (websocket) {
+  //     const message = isSwitchEnableLed ? "turnOffLed" : "turnOnLed";
+  //     websocket.send(message);
+  //   }
+
+  //   const newState = !isSwitchEnableLed;
+  //   setIsSwitchEnableLed(newState);
+  //   setOnLed(newState ? "On" : "Off");
+  // };
+
+  // // ----
+  let websocket;
+
   const [isSwitchEnableFan, setIsSwitchEnableFan] = useState(false);
   const [isSwitchEnableLed, setIsSwitchEnableLed] = useState(false);
   const [onFan, setOnFan] = useState("Off");
   const [onLed, setOnLed] = useState("Off");
-  const [socket, setSocket] = useState(null);
-  const [sensorData, setSensorData] = useState({
-    temperature: 0,
-    humidity: 0,
-    co2: 0,
-  });
-
-  // -----
-  // console.log("🚀 ~ HomeScreen ~ sensorData:", sensorData);
-  const [serverResponse, setServerResponse] = useState(
-    "Waiting for server response..."
-  );
-  const [messageToSend, setMessageToSend] = useState("");
-
-  const handleOnMessage = (message) => {
-    setServerResponse(message.data);
-  };
-
-  const handleOnError = (error) => {
-    console.error("WebSocket error:", error.nativeEvent.description);
-  };
-
-  const onMessage = (event) => {
-    const data = JSON.parse(event.data);
-    setSensorData(data);
-  };
-
-  const handleSendMessage = () => {
-    if (websocket) {
-      websocket.send("on");
-    }
-  };
 
   const toggleSwitchFans = () => {
-    if (websocket) {
-      const turnOnFan = isSwitchEnableFan ? "turnOffFan" : "turnOnFan";
-      websocket.send(turnOnFan);
-    }
-
-    const newState = !isSwitchEnableFan;
-    setIsSwitchEnableFan(newState);
-    setOnFan(newState ? "On" : "Off");
+    websocket.send(isSwitchEnableFan ? "turnOffFan" : "turnOnFan");
+    setIsSwitchEnableFan((prevState) => !prevState);
+    setOnFan((prevState) => (prevState === "On" ? "Off" : "On"));
   };
 
   const toggleSwitchLeds = () => {
-    if (websocket) {
-      const message = isSwitchEnableLed ? "turnOffLed" : "turnOnLed";
-      websocket.send(message);
-    }
-
-    const newState = !isSwitchEnableLed;
-    setIsSwitchEnableLed(newState);
-    setOnLed(newState ? "On" : "Off");
+    websocket.send(isSwitchEnableLed ? "turnOffLed" : "turnOnLed");
+    setIsSwitchEnableLed((prevState) => !prevState);
+    setOnLed((prevState) => (prevState === "On" ? "Off" : "On"));
   };
-
-  let websocket;
-  // ----
 
   return (
     <SafeAreaView>
@@ -118,10 +134,10 @@ export default function HomeScreen({ navigation }) {
           <WebSocket
             ref={(ref) => (websocket = ref)}
             url={SERVER_URL}
-            onMessage={onMessage}
-            onError={handleOnError}
+            // onMessage={onMessage}
+            // onError={handleOnError}
           />
-          {sensorData && (
+          {/* {sensorData && (
             <View className="flex-row justify-between">
               <View className="border-gray-400 border-[0.5px] w-[30%]  bg-white rounded-2xl">
                 <Image
@@ -161,7 +177,7 @@ export default function HomeScreen({ navigation }) {
                 </View>
               </View>
             </View>
-          )}
+          )} */}
         </View>
 
         {/* Choose mode */}
@@ -298,18 +314,6 @@ export default function HomeScreen({ navigation }) {
           </View>
           <View className="my-3">
             <MyRoom />
-          </View>
-          <View className="py-9">
-            <Text>Server response: {serverResponse}</Text>
-            <View style={{ flexDirection: "row", marginTop: 20 }}>
-              <Button onPress={handleSendMessage} title="Send Message" />
-            </View>
-            <WebSocket
-              ref={(ref) => (websocket = ref)}
-              url={SERVER_URL}
-              onMessage={handleOnMessage}
-              onError={handleOnError}
-            />
           </View>
         </View>
       </ScrollView>
