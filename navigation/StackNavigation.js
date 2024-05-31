@@ -1,5 +1,4 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import { Text, Button, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "../screens/HomeScreen";
 import FanScreen from "../screens/FanScreen";
@@ -7,7 +6,6 @@ import StartedScreen from "../screens/StartedScreen";
 import MyProfile from "../screens/MyProfile";
 import SignIn from "../screens/SignIn";
 import SignUp from "../screens/SignUp";
-import LedControl from "../screens/LedControl";
 
 const Stack = createStackNavigator();
 export default function StackNavigation() {
@@ -18,11 +16,6 @@ export default function StackNavigation() {
           name="StartScreen"
           options={{ headerShown: false }}
           component={StartedScreen}
-        />
-        <Stack.Screen
-          name="LedScreen"
-          // options={{ headerShown: false }}
-          component={LedControl}
         />
         <Stack.Screen
           name="SignInScreen"
