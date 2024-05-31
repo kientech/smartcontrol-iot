@@ -6,7 +6,7 @@ const server = new WebSocket.Server({ port: PORT });
 server.on("connection", (socket) => {
   console.log("A new client connected");
 
-  // Gửi dữ liệu cảm biến ban đầu đến client
+  // send data from sensors to server
   const initialSensorData = { temperature: 0, humidity: 0 }; // Thay đổi dữ liệu cảm biến nếu cần
   socket.send(JSON.stringify(initialSensorData));
 
@@ -38,6 +38,18 @@ server.on("connection", (socket) => {
         server.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify(fanStatus));
+          }
+        });
+      } else if (parsedMessage.type === "ledControl") {
+        // Xử lý điều khiển đèn LED
+        const { status } = parsedMessage;
+        console.log(`LED status: ${status}`);
+
+        // Gửi lại trạng thái đèn LED cho tất cả các client
+        const ledStatus = { type: "ledControl", status };
+        server.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(ledStatus));
           }
         });
       } else {

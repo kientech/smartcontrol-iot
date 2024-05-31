@@ -11,7 +11,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ArrowDownIcon,
   Bars3BottomLeftIcon,
@@ -26,7 +26,7 @@ import MyRoom from "../components/MyRoom";
 import { io } from "socket.io-client";
 import WebSocket from "react-native-websocket";
 
-const SERVER_URL = "ws://server-iot-54eb32613657.herokuapp.com/";
+const SERVER_URL = "ws://192.168.1.2:8080";
 export default function HomeScreen({ navigation }) {
   // const [isSwitchEnableFan, setIsSwitchEnableFan] = useState(false);
   // const [isSwitchEnableLed, setIsSwitchEnableLed] = useState(false);
@@ -87,23 +87,53 @@ export default function HomeScreen({ navigation }) {
   // };
 
   // // ----
-  let websocket;
-
   const [isSwitchEnableFan, setIsSwitchEnableFan] = useState(false);
   const [isSwitchEnableLed, setIsSwitchEnableLed] = useState(false);
   const [onFan, setOnFan] = useState("Off");
   const [onLed, setOnLed] = useState("Off");
+  const [sensorData, setSensorData] = useState({
+    temperature: 0,
+    humidity: 0,
+    co2: 0,
+  });
+
+  const websocketRef = useRef(null);
+
+  const onMessage = (event) => {
+    const data = JSON.parse(event.data);
+    setSensorData(data);
+  };
+
+  const handleOnError = (error) => {
+    console.error("WebSocket error:", error.nativeEvent.description);
+  };
 
   const toggleSwitchFans = () => {
-    websocket.send(isSwitchEnableFan ? "turnOffFan" : "turnOnFan");
-    setIsSwitchEnableFan((prevState) => !prevState);
-    setOnFan((prevState) => (prevState === "On" ? "Off" : "On"));
+    if (websocketRef.current) {
+      const message = {
+        type: "fanControl",
+        status: !isSwitchEnableFan ? "on" : "off",
+      };
+      websocketRef.current.send(JSON.stringify(message));
+    }
+
+    const newState = !isSwitchEnableFan;
+    setIsSwitchEnableFan(newState);
+    setOnFan(newState ? "On" : "Off");
   };
 
   const toggleSwitchLeds = () => {
-    websocket.send(isSwitchEnableLed ? "turnOffLed" : "turnOnLed");
-    setIsSwitchEnableLed((prevState) => !prevState);
-    setOnLed((prevState) => (prevState === "On" ? "Off" : "On"));
+    if (websocketRef.current) {
+      const message = {
+        type: "ledControl",
+        status: !isSwitchEnableLed ? "on" : "off",
+      };
+      websocketRef.current.send(JSON.stringify(message));
+    }
+
+    const newState = !isSwitchEnableLed;
+    setIsSwitchEnableLed(newState);
+    setOnLed(newState ? "On" : "Off");
   };
 
   return (
@@ -132,12 +162,12 @@ export default function HomeScreen({ navigation }) {
       <ScrollView>
         <View className="mt-4 mx-4 space-y-3">
           <WebSocket
-            ref={(ref) => (websocket = ref)}
+            ref={websocketRef}
             url={SERVER_URL}
             // onMessage={onMessage}
             // onError={handleOnError}
           />
-          {/* {sensorData && (
+          {sensorData && (
             <View className="flex-row justify-between">
               <View className="border-gray-400 border-[0.5px] w-[30%]  bg-white rounded-2xl">
                 <Image
@@ -177,7 +207,7 @@ export default function HomeScreen({ navigation }) {
                 </View>
               </View>
             </View>
-          )} */}
+          )}
         </View>
 
         {/* Choose mode */}
@@ -275,8 +305,8 @@ export default function HomeScreen({ navigation }) {
                       true: storeColors.backgroundBlue,
                     }}
                     thumbColor={isSwitchEnableFan ? "#f4f3f4" : "#f4f3f4"}
-                    value={isSwitchEnableFan}
                     onValueChange={toggleSwitchFans}
+                    value={isSwitchEnableFan}
                   />
                 </View>
               </View>
