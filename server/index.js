@@ -12,11 +12,20 @@ server.on("connection", (socket) => {
 
   socket.on("message", (message) => {
     console.log("Received:", message.toString());
-    const initialSensorData = {
+    const generateRandomSensorData = () => ({
       temp1: (Math.random() * (30.99 - 29.0) + 29.0).toFixed(2),
       temp2: (Math.random() * (30.99 - 29.0) + 29.0).toFixed(2),
-    };
+    });
+
+    // Send initial sensor data
+    const initialSensorData = generateRandomSensorData();
     socket.send(JSON.stringify(initialSensorData));
+
+    // Send updated sensor data every second
+    const intervalId = setInterval(() => {
+      const updatedSensorData = generateRandomSensorData();
+      socket.send(JSON.stringify(updatedSensorData));
+    }, 1000);
 
     try {
       const parsedMessage = JSON.parse(message);
