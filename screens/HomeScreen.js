@@ -36,11 +36,13 @@ export default function HomeScreen({ navigation }) {
     temp2: 0,
     // co2: 0,
   });
+  console.log(sensorData);
 
   const websocketRef = useRef(null);
 
   const onMessage = (event) => {
     const data = JSON.parse(event.data);
+    console.log("🚀 ~ onMessage ~ data:", data);
     setSensorData(data);
   };
 

@@ -12,6 +12,11 @@ server.on("connection", (socket) => {
 
   socket.on("message", (message) => {
     console.log("Received:", message.toString());
+    const initialSensorData = {
+      temp1: (Math.random() * (30.99 - 29.0) + 29.0).toFixed(2),
+      temp2: (Math.random() * (30.99 - 29.0) + 29.0).toFixed(2),
+    };
+    socket.send(JSON.stringify(initialSensorData));
 
     try {
       const parsedMessage = JSON.parse(message);
