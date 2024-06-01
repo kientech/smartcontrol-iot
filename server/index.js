@@ -6,26 +6,27 @@ const server = new WebSocket.Server({ port: PORT });
 server.on("connection", (socket) => {
   console.log("A new client connected");
 
+  const generateRandomSensorData = () => ({
+    temp1: (Math.random() * (30.99 - 29.0) + 29.0).toFixed(2),
+    temp2: (Math.random() * (30.99 - 29.0) + 29.0).toFixed(2),
+  });
+
+  // Send initial sensor data
+  const initialSensorData = generateRandomSensorData();
+  socket.send(JSON.stringify(initialSensorData));
+
+  // Send updated sensor data every second
+  const intervalId = setInterval(() => {
+    const updatedSensorData = generateRandomSensorData();
+    socket.send(JSON.stringify(updatedSensorData));
+  }, 1000);
+
   // send data from sensors to server
   // const initialSensorData = { temperature: 0, humidity: 0 }; // Thay đổi dữ liệu cảm biến nếu cần
   // socket.send(JSON.stringify(initialSensorData));
 
   socket.on("message", (message) => {
     console.log("Received:", message.toString());
-    const generateRandomSensorData = () => ({
-      temp1: (Math.random() * (30.99 - 29.0) + 29.0).toFixed(2),
-      temp2: (Math.random() * (30.99 - 29.0) + 29.0).toFixed(2),
-    });
-
-    // Send initial sensor data
-    const initialSensorData = generateRandomSensorData();
-    socket.send(JSON.stringify(initialSensorData));
-
-    // Send updated sensor data every second
-    const intervalId = setInterval(() => {
-      const updatedSensorData = generateRandomSensorData();
-      socket.send(JSON.stringify(updatedSensorData));
-    }, 1000);
 
     try {
       const parsedMessage = JSON.parse(message);
