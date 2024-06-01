@@ -18,6 +18,7 @@ server.on("connection", (socket) => {
   // Send updated sensor data every second
   const intervalId = setInterval(() => {
     const updatedSensorData = generateRandomSensorData();
+    console.log("🚀 ~ intervalId ~ updatedSensorData:", updatedSensorData)
     socket.send(JSON.stringify(updatedSensorData));
   }, 1000);
 
