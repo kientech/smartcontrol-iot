@@ -25,7 +25,7 @@ import { storeColors } from "../theme";
 import MyRoom from "../components/MyRoom";
 import WebSocket from "react-native-websocket";
 
-const SERVER_URL = "ws://192.168.1.3:8080";
+const SERVER_URL = "ws://server-iot-54eb32613657.herokuapp.com/";
 export default function HomeScreen({ navigation }) {
   const [isSwitchEnableFan, setIsSwitchEnableFan] = useState(false);
   const [isSwitchEnableLed, setIsSwitchEnableLed] = useState(false);
@@ -75,7 +75,6 @@ export default function HomeScreen({ navigation }) {
     setIsSwitchEnableLed(newState);
     setOnLed(newState ? "On" : "Off");
   };
-
 
   return (
     <SafeAreaView>

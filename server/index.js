@@ -6,57 +6,34 @@ const server = new WebSocket.Server({ port: PORT });
 server.on("connection", (socket) => {
   console.log("A new client connected");
 
-  // send data from sensors to server
-  const initialSensorData = { temperature: 0, humidity: 0 }; // Thay đổi dữ liệu cảm biến nếu cần
+  // send initial data from sensors to the client
+  const initialSensorData = { temperature: 0, humidity: 0 };
   socket.send(JSON.stringify(initialSensorData));
 
   socket.on("message", (message) => {
     console.log("Received:", message.toString());
 
     try {
+      // Attempt to parse the message
       const parsedMessage = JSON.parse(message);
 
-      if (parsedMessage.type === "sensorData") {
-        // Xử lý dữ liệu cảm biến
-        const { temperature, humidity } = parsedMessage;
-        console.log(`Temperature: ${temperature} - Humidity: ${humidity}`);
-
-        // Gửi lại dữ liệu cảm biến cho tất cả các client
-        const dataToSend = { temperature, humidity };
-        server.clients.forEach((client) => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(dataToSend));
-          }
-        });
-      } else if (parsedMessage.type === "fanControl") {
-        // Xử lý điều khiển quạt
-        const { status } = parsedMessage;
-        console.log(`Fan status: ${status}`);
-
-        // Gửi lại trạng thái quạt cho tất cả các client
-        const fanStatus = { type: "fanControl", status };
-        server.clients.forEach((client) => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(fanStatus));
-          }
-        });
-      } else if (parsedMessage.type === "ledControl") {
-        // Xử lý điều khiển đèn LED
-        const { status } = parsedMessage;
-        console.log(`LED status: ${status}`);
-
-        // Gửi lại trạng thái đèn LED cho tất cả các client
-        const ledStatus = { type: "ledControl", status };
-        server.clients.forEach((client) => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(ledStatus));
-          }
-        });
-      } else {
-        console.log("Unknown message type");
+      // Check the message type and handle accordingly
+      switch (parsedMessage.type) {
+        case "sensorData":
+          handleSensorData(parsedMessage);
+          break;
+        case "fanControl":
+          handleFanControl(parsedMessage);
+          break;
+        case "ledControl":
+          handleLedControl(parsedMessage);
+          break;
+        default:
+          console.log("Unknown message type");
       }
     } catch (error) {
       console.error("Error parsing message:", error);
+      socket.send(JSON.stringify({ error: "Invalid message format" }));
     }
   });
 
@@ -68,5 +45,37 @@ server.on("connection", (socket) => {
     console.error("Socket error:", error);
   });
 });
+
+function handleSensorData(parsedMessage) {
+  const { temperature, humidity } = parsedMessage;
+  console.log(`Temperature: ${temperature} - Humidity: ${humidity}`);
+
+  const dataToSend = { temperature, humidity };
+  broadcastToClients(dataToSend);
+}
+
+function handleFanControl(parsedMessage) {
+  const { status } = parsedMessage;
+  console.log(`Fan status: ${status}`);
+
+  const fanStatus = { type: "fanControl", status };
+  broadcastToClients(fanStatus);
+}
+
+function handleLedControl(parsedMessage) {
+  const { status } = parsedMessage;
+  console.log(`LED status: ${status}`);
+
+  const ledStatus = { type: "ledControl", status };
+  broadcastToClients(ledStatus);
+}
+
+function broadcastToClients(data) {
+  server.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(data));
+    }
+  });
+}
 
 console.log(`Server is running on port ${PORT}`);
