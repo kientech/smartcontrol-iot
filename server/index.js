@@ -77,6 +77,7 @@ server.on("connection", (socket) => {
 
   socket.on("close", () => {
     console.log("Client disconnected");
+    clearInterval(intervalId);
   });
 
   socket.on("error", (error) => {
