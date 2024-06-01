@@ -32,9 +32,9 @@ export default function HomeScreen({ navigation }) {
   const [onFan, setOnFan] = useState("Off");
   const [onLed, setOnLed] = useState("Off");
   const [sensorData, setSensorData] = useState({
-    temperature: 0,
-    humidity: 0,
-    co2: 0,
+    temp1: 0,
+    temp2: 0,
+    // co2: 0,
   });
 
   const websocketRef = useRef(null);
@@ -68,6 +68,7 @@ export default function HomeScreen({ navigation }) {
         type: "ledControl",
         status: !isSwitchEnableLed ? "on" : "off",
       };
+
       websocketRef.current.send(JSON.stringify(message));
     }
 
@@ -104,8 +105,8 @@ export default function HomeScreen({ navigation }) {
           <WebSocket
             ref={websocketRef}
             url={SERVER_URL}
-            // onMessage={onMessage}
-            // onError={handleOnError}
+            onMessage={onMessage}
+            onError={handleOnError}
           />
           {sensorData && (
             <View className="flex-row justify-between">
@@ -117,7 +118,7 @@ export default function HomeScreen({ navigation }) {
                 <View className="">
                   <Text className="text-center py-2">Temperature</Text>
                   <Text className="text-center pb-4 font-bold">
-                    {sensorData.temperature}°c
+                    {sensorData.temp1}°c
                   </Text>
                 </View>
               </View>
@@ -128,9 +129,9 @@ export default function HomeScreen({ navigation }) {
                   className="mx-auto my-2"
                 />
                 <View className="">
-                  <Text className="text-center py-2">Humidity</Text>
+                  <Text className="text-center py-2">Temperature</Text>
                   <Text className="text-center  font-bold pb-4 ">
-                    {sensorData.humidity}%
+                    {sensorData.temp2}%
                   </Text>
                 </View>
               </View>

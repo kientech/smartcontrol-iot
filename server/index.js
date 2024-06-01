@@ -23,6 +23,7 @@ server.on("connection", (socket) => {
 
         // Gửi lại dữ liệu cảm biến cho tất cả các client
         const dataToSend = { temperature, humidity };
+        socket.send(JSON.stringify(dataToSend));
         server.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify(dataToSend));
