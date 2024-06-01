@@ -7,8 +7,8 @@ server.on("connection", (socket) => {
   console.log("A new client connected");
 
   // send data from sensors to server
-  const initialSensorData = { temperature: 0, humidity: 0 }; // Thay đổi dữ liệu cảm biến nếu cần
-  socket.send(JSON.stringify(initialSensorData));
+  // const initialSensorData = { temperature: 0, humidity: 0 }; // Thay đổi dữ liệu cảm biến nếu cần
+  // socket.send(JSON.stringify(initialSensorData));
 
   socket.on("message", (message) => {
     console.log("Received:", message.toString());

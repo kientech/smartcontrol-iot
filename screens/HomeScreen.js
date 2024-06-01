@@ -32,8 +32,8 @@ export default function HomeScreen({ navigation }) {
   const [onFan, setOnFan] = useState("Off");
   const [onLed, setOnLed] = useState("Off");
   const [sensorData, setSensorData] = useState({
-    temp1: 0,
-    temp2: 0,
+    temp1: 29,
+    temp2: 29.85,
     // co2: 0,
   });
   console.log(sensorData);
